@@ -1,0 +1,19 @@
+QWidget#study_main {
+}
+
+QFrame#top_frame {
+	background:white;
+}
+
+QPushFrame#push_frame {
+	background-color:white;
+	border:2px solid rgb(180, 180, 180);
+}
+
+QPushFrame#push_frame:pressed, QPushFrame#push_frame:hover, QPushFrame#push_frame:checked {
+	background-color:rgb(200, 200, 200);
+}
+
+QScrollArea#scroll_center {
+	border:none;
+}
