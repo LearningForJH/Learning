@@ -7,63 +7,63 @@ import paths
 
 
 class QPushFrame(QFrame):
-    clicked = pyqtSignal()
+	clicked = pyqtSignal()
 
-    ARROW_WIDTH = 20
-    ARROW_HEIGHT = 30
+	ARROW_WIDTH = 20
+	ARROW_HEIGHT = 30
 
-    def __init__(self, master, text, photo, info_list):
-        super().__init__(master)
-        self.master = master
-        self.text = text
-        self.photo = photo
-        self.info = [
-            info_obj for info_obj in info_list if info_obj.text == self.text][0]
-        self.build_inter()
+	def __init__(self, master, text, photo, info_list):
+		super().__init__(master)
+		self.master = master
+		self.text = text
+		self.photo = photo
+		self.info = [
+			info_obj for info_obj in info_list if info_obj.text == self.text][0]
+		self.build_inter()
 
-    def build_inter(self):
-        self.setSizePolicy(self.master.sizePolicy())
-        self.setObjectName("push_frame")
-        self.main_hbox = QHBoxLayout()
-        self.setLayout(self.main_hbox)
+	def build_inter(self):
+		self.setObjectName("push_frame")
+		self.main_hbox = QHBoxLayout()
+		self.setLayout(self.main_hbox)
 
-        self.pht_lb = QLabel(self)
-        self.pht_lb.setPixmap(self.photo)
-        self.pht_vbox = QVBoxLayout()
-        self.pht_vbox.addWidget(self.pht_lb)
+		self.pht_lb = QLabel(self)
+		self.pht_lb.setPixmap(self.photo)
+		self.pht_vbox = QVBoxLayout()
+		self.pht_vbox.addWidget(self.pht_lb)
 
-        self.intro_title = QLabel(self.text, self)
-        self.intro_title.setObjectName("intro_title")
-        self.intro_title.setFont(QFont("苹方-简", 22))
-        temp_intro = ""
-        if self.info.english:
-            temp_intro += self.info.english
-        if self.info.info:
-            temp_intro += self.info.info
-        self.intro_content = QLabel(temp_intro, self)
-        self.intro_content.setObjectName("intro_content")
-        self.intro_content.setFont(QFont("苹方-简", 12))
-        self.content_vbox = QVBoxLayout()
-        self.content_vbox.addStretch(1)
-        self.content_vbox.addWidget(self.intro_title)
-        self.content_vbox.addWidget(self.intro_content)
-        self.content_vbox.addStretch(1)
+		self.intro_title = QLabel(self.text, self)
+		self.intro_title.setObjectName("intro_title")
+		self.intro_title.setFont(QFont("苹方-简", 22))
+		temp_intro = ""
+		if self.info.english:
+			temp_intro += self.info.english
+		if self.info.info:
+			temp_intro += self.info.info
+		self.intro_content = QLabel(temp_intro, self)
+		self.intro_content.setObjectName("intro_content")
+		self.intro_content.setFont(QFont("苹方-简", 12))
+		self.content_vbox = QVBoxLayout()
+		self.content_vbox.addStretch(1)
+		self.content_vbox.addWidget(self.intro_title)
+		self.content_vbox.addWidget(self.intro_content)
+		self.content_vbox.addStretch(1)
 
-        temp = QPixmap(os.path.join(paths.IMAGE, "arrow.png"))
-        temp_pht = temp.scaled(QPushFrame.ARROW_WIDTH,
-                               QPushFrame.ARROW_HEIGHT, Qt.KeepAspectRatio)
-        self.go_pht = QLabel(self)
-        self.go_pht.setPixmap(temp_pht)
-        self.arrow_vbox = QVBoxLayout()
-        self.arrow_vbox.addWidget(self.go_pht)
+		temp = QPixmap(os.path.join(paths.IMAGE, "arrow.png"))
+		temp_pht = temp.scaled(QPushFrame.ARROW_WIDTH,
+							   QPushFrame.ARROW_HEIGHT, Qt.KeepAspectRatio)
+		self.go_pht = QLabel(self)
+		self.go_pht.setPixmap(temp_pht)
+		self.arrow_vbox = QVBoxLayout()
+		self.arrow_vbox.addWidget(self.go_pht)
 
-        self.main_hbox.addLayout(self.pht_vbox)
-        self.main_hbox.addLayout(self.content_vbox)
-        self.main_hbox.addStretch(1)
-        self.main_hbox.addLayout(self.arrow_vbox)
+		self.main_hbox.addLayout(self.pht_vbox)
+		self.main_hbox.addStretch(1)
+		self.main_hbox.addLayout(self.content_vbox)
+		self.main_hbox.addStretch(12)
+		self.main_hbox.addLayout(self.arrow_vbox)
 
-    def mouseReleaseEvent(self, event):
-        self.clicked.emit()
+	def mouseReleaseEvent(self, event):
+		self.clicked.emit()
 
 
 class Study(QWidget):
