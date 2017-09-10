@@ -76,9 +76,9 @@ class AuthInter(QWidget):
         self.main_vbox.addLayout(self.hbox_top)
         self.main_vbox.addStretch(2)
         self.main_vbox.addLayout(self.hbox_center)
-        self.main_vbox.addStretch(12)
+        self.main_vbox.addStretch(14)
         self.main_vbox.addLayout(self.hbox_bottom)
-        self.main_vbox.addStretch(1)
+        self.main_vbox.addStretch(3)
         self.main_vbox.addLayout(self.hbox_btn)
         self.main_vbox.addStretch(42)
 
@@ -94,7 +94,7 @@ class AuthInter(QWidget):
         self.submit(text)
 
     def submit(self, text):
-        if not text:
+        if not text and self.hasFocus():
             QMessageBox.warning(
                 self, "System", "Please input a VALID name instead of spacings or none")
             return

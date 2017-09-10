@@ -3,25 +3,22 @@ import pickle
 
 
 class Element:
-    TEXT = 0
-    IMAGE = 1
 
-    def __init__(self, etype):
-        self.etype = etype
+    def __init__(self, content):
+        self.content = content
+
+    def is_text(self):
+        return True
 
 
 class Text(Element):
-
-    def __init__(self, text):
-        super().__init__(Element.TEXT)
-        self.text = text
+    pass
 
 
 class Image(Element):
 
-    def __init__(self, content):
-        super().__init__(Element.IMAGE)
-        self.content = content
+    def is_text(self):
+        return False
 
 
 class Content:
@@ -30,24 +27,9 @@ class Content:
         self.content = elements_set
 
 
-class Choice:
-
-    def __init__(self, content):
-        self.content = content
-
-
-class Choices:
-
-    def __init__(self, choices):
-        self.choices = choices
-
-
 class Question:
-    BLANK_FILLING = 0
-    MULTIPLE_CHOICING = 1
 
-    def __init__(self, qtype, content, answer):
-        self.qtype = qtype
+    def __init__(self, content, answer):
         self.content = content
         self.answer = answer
 
@@ -60,25 +42,68 @@ class Question:
                 return True
         return False
 
+    def get_options(self, *args, **kwargs):
+        return []
+
+    def need_input(self, *args, **kwargs):
+        return True
+
 
 class BlankFilling(Question):
 
     def __init__(self, content, answer):
-        super().__init__(Question.BLANK_FILLING, content, answer)
+        super().__init__(content, answer)
 
 
 class MultipleChoicing(Question):
 
     def __init__(self, content, answer, choices):
-        super().__init__(Question.MULTIPLE_CHOICING, content, answer)
+        super().__init__(content, answer)
         self.choices = choices
 
-ALL = "all"
+    def get_option(self):
+        return self.choices
+
+    def need_input(self):
+        return False
 
 
-def load_all(fpath):
+class Area:
+    CURR_ALL = "current_all"
+
+    def __init__(self, name, questions):
+        self.name = name
+        self.questions = questions
+
+    def _add_question(self, question, diff):
+        self.questions[diff][1].append(question)
+
+    def _add_diff(self, diff_name):
+        self.questions[diff_name] = [0, []]
+
+    def total_star(self):
+        #(difficulty, stars)
+        #(1, 15) (2, 20) ... (n, 10 + 5n)
+        diff_rng = len(self.questions)
+        return (25 * diff_rng + 5 * diff_rng ** 2) / 2
+
+    def curr_star(self, diff):
+        if diff != Area.CURR_ALL:
+            return self.questions[diff][0]
+        else:
+            return sum(item[0] for item in self.questions.values())
+
+    def add_star(self, star, diff):
+        curr_star = self.questions[diff][0]
+        if star <= curr_star:
+            return
+        self.questions[diff][0] = star
+
+
+def load(fpath):
     with open(fpath, "rb") as f:
         cipher = f.read()
     content = base64.decodestring(cipher)
-    unpickled = [pickle.loads(obj + b".") for obj in content.split(b".") if obj]
+    unpickled = [pickle.loads(obj + b".")
+                 for obj in content.split(b".") if obj]
     return unpickled

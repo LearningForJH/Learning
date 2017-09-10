@@ -13,7 +13,8 @@ import paths
 
 
 class QPushPhotoFrame(QFrame):
-    clicked = pyqtSignal()
+    released = pyqtSignal()
+    pressed = pyqtSignal()
 
     def __init__(self, master, pixmaps, text):
         super().__init__(master)
@@ -32,6 +33,7 @@ class QPushPhotoFrame(QFrame):
         self.pht_lb.setAlignment(Qt.AlignCenter)
 
         self.text_lb = QLabel(self.text, self)
+        self.text_lb.setObjectName("not_selected_text")
         self.text_lb.setFont(QFont("苹方-简", 11))
         self.text_lb.setAlignment(Qt.AlignCenter)
 
@@ -41,17 +43,31 @@ class QPushPhotoFrame(QFrame):
         self.main_vbox.setContentsMargins(0, 5, 0, 0)
 
     def mousePressEvent(self, event):
+    	self.selecting()
+    	self.pressed.emit()
+
+    def selecting(self):
         self.pht_lb.setPixmap(self.pixmaps["selecting"])
+        self.text_lb.setObjectName("selecting_text")
+        self.reread()
 
     def mouseReleaseEvent(self, event):
         self.select()
-        self.clicked.emit()
+        self.released.emit()
 
     def select(self):
         self.pht_lb.setPixmap(self.pixmaps["selected"])
+        self.text_lb.setObjectName("selected_text")
+        self.reread()
 
     def cancel(self):
         self.pht_lb.setPixmap(self.pixmaps["not_selected"])
+        self.text_lb.setObjectName("not_selected_text")
+        self.reread()
+
+    def reread(self):
+    	with open("maininter.qss") as f:
+    		self.setStyleSheet(f.read())
 
 
 class MainInter(QWidget):
@@ -132,7 +148,8 @@ class MainInter(QWidget):
 
     def init_btn_and_frame(self):
         for btn, _ in self.btn_and_frame_list:
-            btn.clicked.connect(self.choose)
+            btn.released.connect(self.choose)
+            btn.pressed.connect(self._switch_font_color)
         self.btn_and_frame_list[0][0].select()
         self.main_area_hbox.addWidget(self.btn_and_frame_list[0][1]())
         self.main_area_hbox.setContentsMargins(0, 0, 0, 0)
@@ -155,6 +172,13 @@ class MainInter(QWidget):
                 self.main_area_hbox.addWidget(frame())
                 continue
             btn.cancel()
+
+    def _switch_font_color(self):
+    	sender = self.sender()
+    	for btn, frame in self.btn_and_frame_list:
+    		if btn == sender:
+    			continue
+    		btn.cancel()
 
     def study_widget(self):
         return QWidget(self)

@@ -1,0 +1,22 @@
+QWidget#choose {
+	background-color:white;
+}
+
+QPushButton#choosable_btn {
+	border:none;
+    border-radius:25.9px;
+    color:white;
+    background-color:rgb(0, 175, 255);
+}
+
+QPushButton#choosable_btn:pressed, QPushButton#choosable_btn:hover, QPushButton#choosable_btn:checked {
+	border:none;
+    background-color:rgb(90, 160, 250);
+}
+
+QPushButton#unchoosable_btn {
+	border:none;
+	border-radius:25.9px;
+	color:white;
+	background-color:rgb(127, 127, 127);
+}

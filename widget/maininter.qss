@@ -6,3 +6,15 @@ QFrame#bottom_frame {
 	background:white;
 	border-top:2px solid rgb(247, 247, 247);
 }
+
+QLabel#not_selected_text {
+	color:black;
+}
+
+QLabel#selecting_text {
+	color:rgb(208, 206, 206);
+}
+
+QLabel#selected_text {
+	color:rgb(3, 162, 255);
+}
