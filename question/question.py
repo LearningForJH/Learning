@@ -35,12 +35,9 @@ class Question:
 
     def check(self, answer, exact=False):
         if not exact:
-            if answer.upper() == self.answer.upper():
-                return True
-        else:
-            if answer == self.answer:
-                return True
-        return False
+            answer = self.answer.upper()
+            usr_answer = answer.upper()
+        return answer == usr_answer
 
     def get_options(self, *args, **kwargs):
         return []
@@ -59,10 +56,10 @@ class MultipleChoicing(Question):
 
     def __init__(self, content, answer, choices):
         super().__init__(content, answer)
-        self.choices = choices
+        self._choices = choices
 
     def get_option(self):
-        return self.choices
+        return self._choices
 
     def need_input(self):
         return False

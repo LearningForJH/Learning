@@ -3,6 +3,7 @@ import os
 from PyQt5.QtWidgets import QApplication, QSizePolicy, QToolTip, QWidget, QWidgetItem, QSpacerItem, QLabel, QPushButton, QFrame, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtCore import Qt, pyqtSignal
+from base import BaseWidget
 import paths
 
 
@@ -28,23 +29,16 @@ class QPushLabel(QLabel):
         return CANCEL
 
 
-class Choose(QWidget):
-    Title = "选择"
-    Icon = os.path.join(paths.IMAGE, "choose.png")
+class Choose(BaseWidget):
+    title = "选择"
+    icon = "choose.png"
 
     choosed = pyqtSignal(str)
 
     def __init__(self, ch_list, master=None):
-        super().__init__(master)
-        self.master = master
+        super().__init__(master, Choose.title, Choose.icon)
         self.ch_type, *self.ch_list = ch_list
-        if self.master:
-            self.build_master_inter()
         self.build_inter()
-
-    def build_master_inter(self):
-        self.master.setWindowTitle(Choose.Title)
-        self.master.setWindowIcon(QIcon(Choose.Icon))
 
     def build_inter(self):
         with open("choose.qss") as f:

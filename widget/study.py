@@ -66,9 +66,7 @@ class QPushFrame(QFrame):
         self.clicked.emit()
 
 
-class Study(QWidget):
-    Title = "学习"
-    Icon = os.path.join(paths.IMAGE, "study.png")
+class Study(QFrame):
 
     TOP_ICON_WIDTH = 50
     TOP_ICON_HEIGHT = 50
@@ -79,16 +77,9 @@ class Study(QWidget):
 
     def __init__(self, areas, info_list, master=None):
         super().__init__(master)
-        self.master = master
         self.areas = areas
         self.info_list = info_list
-        if self.master:
-            self.build_master_inter()
         self.build_inter()
-
-    def build_master_inter(self):
-        self.master.setWindowTitle(Study.Title)
-        self.master.setWindowIcon(Study.Icon)
 
     def build_inter(self):
         temp = QPixmap(os.path.join(paths.IMAGE, "数学.png"))
@@ -118,20 +109,21 @@ class Study(QWidget):
         self.main_vbox = QVBoxLayout()
         self.setLayout(self.main_vbox)
 
-        self.top_icon_lb = QLabel(self)
-        self.top_icon_lb.setPixmap(self.top_icon)
+        #self.top_icon_lb = QLabel(self)
+        #self.top_icon_lb.setPixmap(self.top_icon)
 
         self.top_subj_lb = QLabel("数学", self)
-        self.top_subj_lb.setFont(QFont("苹方-简", 22))
+        self.top_subj_lb.setFont(QFont("苹方-简", 24))
+        self.top_subj_lb.setObjectName("subject")
 
         self.top_frame = QFrame(self)
         self.top_frame.setObjectName("top_frame")
         self.top_column = QHBoxLayout()
         self.top_frame.setLayout(self.top_column)
-        self.top_column.addWidget(self.top_icon_lb)
-        self.top_column.addStretch(4)
+        #self.top_column.addWidget(self.top_icon_lb)
+        self.top_column.addStretch(1)
         self.top_column.addWidget(self.top_subj_lb)
-        self.top_column.addStretch(5)
+        self.top_column.addStretch(1)
         self.top_column.setContentsMargins(0, 0, 0, 0)
 
         self.main_vbox.addWidget(self.top_frame)
@@ -139,17 +131,16 @@ class Study(QWidget):
         self.scroll_center = QScrollArea(self)
         self.scroll_center.setAlignment(Qt.AlignCenter)
         self.scroll_center.setObjectName("scroll_center")
-        self.scroll_center.setContentsMargins(0, 0, 0, 0)
 
         self._center_area = QFrame(self)
         self._center_area.setSizePolicy(self.scroll_center.sizePolicy())
         self._center_vbox = QVBoxLayout()
         self._center_area.setLayout(self._center_vbox)
+        self._center_area.setObjectName("center_area")
 
         length = len(self.mid_frames)
         for frame in self.mid_frames:
             self._center_vbox.addWidget(frame)
-            self._center_vbox.addStretch(1)
         self._center_vbox.setContentsMargins(0, 0, 0, 0)
 
         self.scroll_center.setWidget(self._center_area)
@@ -177,11 +168,10 @@ class Study(QWidget):
 
     def resizeEvent(self, event):
         width = self.width()
-        fited = width - 1
-        # self.scroll_center.setMinimumWidth(fited)
-        self._center_area.setMinimumWidth(fited)
+        fited = width * 95 / 100
+        self._center_area.setFixedWidth(fited)
         for frame in self.mid_frames:
-            frame.setMinimumWidth(fited)
+            frame.setFixedWidth(fited)
 
 
 class _Info:
@@ -192,8 +182,12 @@ class _Info:
         self.english = english
 
 
+_areas = ["代数", "几何", "统计", "未知", "有理数"]
+_info_list = [_Info("代数", english="Algebra"), _Info("几何", english="Geometry"), _Info("统计", english="Statistics"), _Info("未知", english="Unknown"), _Info("有理数", english="Reasonable Number")]
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    w = Study(["代数", "几何", "统计", "未知", "有理数"], [_Info("代数", english="Algebra"), _Info("几何", english="Geometry"), _Info("统计", english="Statistics"), _Info("未知", english="Unknown"), _Info("有理数", english="Reasonable Number")])
+    w = Study(_areas, _info_list)
     w.resize(460, 733)
     sys.exit(app.exec_())

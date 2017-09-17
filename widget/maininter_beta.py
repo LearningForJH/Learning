@@ -14,32 +14,18 @@ import paths
 # SELECTING: 240, 240, 240
 
 
-class QPushPhotoFrame(QFrame):
+class QPushLabel(QLabel):
     released = pyqtSignal()
     pressed = pyqtSignal()
 
-    def __init__(self, master, pixmaps, text):
+    def __init__(self, master, pixmaps):
         super().__init__(master)
         self.pixmaps = pixmaps
-        self.text = text
         self.build_inter()
 
     def build_inter(self):
-        self.setObjectName("push_frame")
-        self.main_vbox = QVBoxLayout()
-        self.setLayout(self.main_vbox)
-
-        self.pht_lb = QLabel(self)
-        self.pht_lb.setPixmap(self.pixmaps["not_selected"])
-        self.pht_lb.setAlignment(Qt.AlignCenter)
-
-        self.text_lb = QLabel(self.text, self)
-        self.text_lb.setObjectName("not_selected_text")
-        self.text_lb.setFont(QFont("苹方-简", 11))
-        self.text_lb.setAlignment(Qt.AlignCenter)
-
-        self.main_vbox.addWidget(self.pht_lb)
-        self.main_vbox.addWidget(self.text_lb)
+        self.setPixmap(self.pixmaps["not_selected"])
+        self.setAlignment(Qt.AlignCenter)
 
         self.setContentsMargins(0, 0, 0, 0)
 
@@ -48,37 +34,27 @@ class QPushPhotoFrame(QFrame):
         self.pressed.emit()
 
     def selecting(self):
-        self.pht_lb.setPixmap(self.pixmaps["selecting"])
-        self.text_lb.setObjectName("selecting_text")
-        self.reread()
+        self.setPixmap(self.pixmaps["selecting"])
 
     def mouseReleaseEvent(self, event):
-        self.select()
+        self.have_selected()
         self.released.emit()
 
-    def select(self):
-        self.pht_lb.setPixmap(self.pixmaps["selected"])
-        self.text_lb.setObjectName("selected_text")
-        self.reread()
+    def have_selected(self):
+        self.setPixmap(self.pixmaps["selected"])
 
     def cancel(self):
-        self.pht_lb.setPixmap(self.pixmaps["not_selected"])
-        self.text_lb.setObjectName("not_selected_text")
-        self.reread()
-
-    def reread(self):
-        with open("maininter.qss") as f:
-            self.setStyleSheet(f.read())
+        self.setPixmap(self.pixmaps["not_selected"])
 
 
 class MainInter(BaseWidget):
     title = ""
     icon = "main.png"
 
-    STUDY_IMAGE_WIDTH = 44
-    STUDY_IMAGE_HEIGHT = 28
-    SETTING_IMAGE_WIDTH = 38
-    SETTING_IMAGE_HEIGHT = 38
+    STUDY_IMAGE_WIDTH = 55
+    STUDY_IMAGE_HEIGHT = 36
+    SETTING_IMAGE_WIDTH = 48
+    SETTING_IMAGE_HEIGHT = 48
 
     def __init__(self, master=None):
         super().__init__(master, MainInter.title, MainInter.icon)
@@ -103,7 +79,7 @@ class MainInter(BaseWidget):
         self.study_phts = {"not_selected": self.study_nsl_pht,
                            "selected": self.study_sl_pht,
                            "selecting": self.study_slg_pht}
-        self.study_pht_btn = QPushPhotoFrame(self, self.study_phts, "学习")
+        self.study_pht_btn = QPushLabel(self, self.study_phts)
 
         self.setting_nsl_pht = QPixmap(os.path.join(
             paths.IMAGE, "setting_not_selected.png")).scaled(MainInter.SETTING_IMAGE_WIDTH, MainInter.SETTING_IMAGE_HEIGHT, Qt.KeepAspectRatio)
@@ -114,7 +90,7 @@ class MainInter(BaseWidget):
         self.setting_phts = {"not_selected": self.setting_nsl_pht,
                              "selected": self.setting_sl_pht,
                              "selecting": self.setting_slg_pht}
-        self.setting_pht_btn = QPushPhotoFrame(self, self.setting_phts, "我")
+        self.setting_pht_btn = QPushLabel(self, self.setting_phts)
 
         self.btn_and_frame_list = [(self.study_pht_btn, self.study_widget
                                     ), (self.setting_pht_btn, self.setting_widget)]
@@ -134,7 +110,6 @@ class MainInter(BaseWidget):
         self.bottom_hbox.addStretch(2)
 
         self.main_vbox.addLayout(self.main_area_hbox)
-        self.main_vbox.addStretch(1)
         self.main_vbox.addWidget(self.bottom_frame)
         self.main_vbox.setContentsMargins(0, 0, 0, 0)
 
@@ -143,8 +118,8 @@ class MainInter(BaseWidget):
     def init_btn_and_frame(self):
         for btn, _ in self.btn_and_frame_list:
             btn.released.connect(self.choose)
-            btn.pressed.connect(self._switch_font_color)
-        self.btn_and_frame_list[0][0].select()
+            btn.pressed.connect(self._switch_color)
+        self.btn_and_frame_list[0][0].have_selected()
         self.main_area_hbox.addWidget(self.btn_and_frame_list[0][1]())
 
     def clear(self, layout):
@@ -166,7 +141,7 @@ class MainInter(BaseWidget):
                 continue
             btn.cancel()
 
-    def _switch_font_color(self):
+    def _switch_color(self):
         sender = self.sender()
         for btn, frame in self.btn_and_frame_list:
             if btn == sender:
@@ -174,12 +149,9 @@ class MainInter(BaseWidget):
             btn.cancel()
 
     def study_widget(self):
-        '''
         study = Study(_areas, _info_list)
         study.setContentsMargins(0, 0, 0, 0)
         return study
-        '''
-        return QWidget(self)
 
     def setting_widget(self):
         return QWidget(self)
@@ -188,5 +160,5 @@ class MainInter(BaseWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MainInter()
-    w.resize(725, 825)
+    w.setGeometry(0, 0, 725, 825)
     sys.exit(app.exec_())

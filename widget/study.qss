@@ -1,19 +1,31 @@
 QWidget#study_main {
+	background-color:rgb(31, 138, 255)
 }
 
 QFrame#top_frame {
-	background:white;
+	background-color:rgb(31, 138, 255);
+	border:8px solid rgb(31, 138, 255);
 }
 
-QPushFrame#push_frame {
+QLabel#subject {
+	color:white;
+}
+
+QFrame#push_frame {
 	background-color:white;
-	border:2px solid rgb(180, 180, 180);
+	border-radius:6px;
 }
 
-QPushFrame#push_frame:pressed, QPushFrame#push_frame:hover, QPushFrame#push_frame:checked {
+QFrame#push_frame:pressed, QFrame#push_frame:hover, QFrame#push_frame:checked {
 	background-color:rgb(200, 200, 200);
+}
+
+QFrame#center_area {
+	border:none;
+	background-color:rgb(250, 250, 250);
 }
 
 QScrollArea#scroll_center {
 	border:none;
+	background-color:rgb(250, 250, 250);
 }

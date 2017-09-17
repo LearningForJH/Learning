@@ -2,23 +2,17 @@ import os
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QMessageBox, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QFont, QIcon
+from base import BaseWidget
 import paths
 
 
-class AuthInter(QWidget):
-    Title = "登录"
-    Icon = os.path.join(paths.IMAGE, "auth.png")
+class AuthInter(BaseWidget):
+    title = "登录"
+    icon = "auth.png"
 
     def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        if self.master:
-            self.build_master_inter()
+        super().__init__(master, AuthInter.title, AuthInter.icon)
         self.build_inter()
-
-    def build_master_inter(self):
-        self.master.setWindowTitle(AuthInter.Title)
-        self.master.setWindowIcon(QIcon(AuthInter.Icon))
 
     def build_inter(self):
         with open("auth.qss", "r") as f:
